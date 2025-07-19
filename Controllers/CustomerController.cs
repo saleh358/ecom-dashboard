@@ -13,5 +13,16 @@ namespace ECom_wep_app.Controllers
             List<Customer> customers = customerBL.GetAllCustomers();
             return View("List",customers);
         }
+        public IActionResult Details(int id)
+        {
+            CustomerBL customerBL = new CustomerBL();
+            Customer customer = customerBL.GetCustomerById(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            return View("Details",customer);
+
+        }
     }
 }
