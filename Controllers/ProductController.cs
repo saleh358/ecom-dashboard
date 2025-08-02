@@ -6,13 +6,13 @@ namespace ECom_wep_app.Controllers
     public class ProductController : Controller
     {
         // Product/List
-        public IActionResult Lista()
+        public IActionResult List()
         {
             ProductBL productBL = new ProductBL();
             List<Product> products = productBL.GetAllProducts();
-            return View("Lista", products);
+            return View("List", products);
         }
-        public IActionResult Info(int id)
+        public IActionResult Details(int id)
         {
             ProductBL productBL = new ProductBL();
             Product product = productBL.GetProductById(id);
@@ -20,7 +20,7 @@ namespace ECom_wep_app.Controllers
             {
                 return NotFound();
             }
-            return View("Info", product);
+            return View("Details", product);
 
         }
     }
