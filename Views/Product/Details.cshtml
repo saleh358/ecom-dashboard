@@ -1,0 +1,13 @@
+﻿@model Product
+
+<div class="card shadow-sm" style="max-width: 500px; margin: auto;">
+    <div class="card-body text-center">
+        <img src="~/Images/@Model.ImageUrl"
+             alt="Product Image"
+             class="rounded-circle img-thumbnail mb-3"
+             style="width: 120px; height: 120px;" />
+
+        <h3 class="card-title">@Model.Name</h3>
+
+        <p class="text-muted mb-1"><strong>Type:</strong> @Model.Type</p>
+  
