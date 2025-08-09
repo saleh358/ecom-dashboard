@@ -5,6 +5,7 @@
         <i class="fas fa-plus"></i> Add New
     </a>
 </div>
+@await Html.PartialAsync("_GeneralPopUp")
 
 <table class="table table-bordered table-hover table-striped align-middle text-center">
     <thead class="table-dark">
@@ -15,7 +16,8 @@
             <th>Address</th>
             <th>Phone Number</th>
             <th>Image</th>
-            <th>Action</th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -28,16 +30,23 @@
                 <td>@item.Address</td>
                 <td>@item.PhoneNumber</td>
                 <td>
-                    <img src="~/Images/@item.ImageUrl"
-                         alt="Customer Image"
-                         class="img-thumbnail"
-                         style="max-width: 80px; height: auto;" />
+                    <img src="~/Images/@item.ImageUrl" alt="Customer Image"
+                         class="img-thumbnail" style="max-width:80px;height:auto;" />
                 </td>
                 <td>
                     <a href="@Url.Action("Details", "Customer", new { id = item.Id })"
                        class="btn btn-sm btn-info">
                         <i class="fas fa-eye"></i>
                     </a>
+                </td>
+                <td>
+                    <form asp-action="Delete" asp-controller="Customer"
+                          asp-route-id="@item.Id" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger"
+                                onclick=showPopUp()>
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
                 </td>
             </tr>
         }

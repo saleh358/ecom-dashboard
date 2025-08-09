@@ -57,7 +57,8 @@ namespace ECom_wep_app.Controllers
             return View("Update", customer);
         }
 
-        [HttpDelete]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
             _customerRepoitory.DeleteCustomer(id);
