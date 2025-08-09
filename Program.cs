@@ -1,7 +1,16 @@
+using ECom_wep_app.Models;
+using ECom_wep_app.Repository.Abstract;
+using ECom_wep_app.Repository.Services;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<EComDBContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection")));
+builder.Services.AddScoped<ICustomerRepoitory, CustomerRepository>();
 
 var app = builder.Build();
 
