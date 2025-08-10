@@ -60,7 +60,7 @@
         function confirmDelete(btn) {
           const form = btn.closest('form');
           GeneralPopup.open(
-            'Do you really want to delete this?',
+            'Do you really want to delete this customer?',
             () => form.submit(),
             () => console.log('Popup closed')
           );
