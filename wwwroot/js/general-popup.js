@@ -1,25 +1,33 @@
-﻿// Get the modal
-var modal = document.getElementById("general-popup");
+﻿ (function () {
+  const root = document.getElementById('general-popup');
+    const textEl = document.getElementById('gp-text');
+    const btnOk = document.getElementById('gp-ok');
+    const btnCancel = document.getElementById('gp-cancel');
+    const btnClose = root.querySelector('.gp-close');
 
-// Get the button that opens the modal
-var btn = document.getElementById("confirm-button");
+    let onOk = null, onClose = null;
 
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks on the button, open the modal
-function showPopUp() {
-  modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal
-function closePopUp() {
-  modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
+    function open(message, okCb, closeCb) {
+        textEl.textContent = message || '';
+    onOk = typeof okCb === 'function' ? okCb : null;
+    onClose = typeof closeCb === 'function' ? closeCb : null;
+    root.hidden = false;
   }
-}
+
+    function close() {
+        root.hidden = true;
+    if (onClose) onClose();
+  }
+
+    btnOk.addEventListener('click', function () {
+    if (onOk) onOk();
+    close();
+  });
+    btnCancel.addEventListener('click', close);
+    btnClose.addEventListener('click', close);
+    root.addEventListener('click', function (e) {
+    if (e.target === root) close();
+  });
+
+    window.GeneralPopup = {open, close};
+})();

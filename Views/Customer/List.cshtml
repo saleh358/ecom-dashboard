@@ -5,7 +5,7 @@
         <i class="fas fa-plus"></i> Add New
     </a>
 </div>
-@await Html.PartialAsync("_GeneralPopUp")
+@await Html.PartialAsync("_GeneralPopup")
 
 <table class="table table-bordered table-hover table-striped align-middle text-center">
     <thead class="table-dark">
@@ -40,15 +40,30 @@
                     </a>
                 </td>
                 <td>
-                    <form asp-action="Delete" asp-controller="Customer"
-                          asp-route-id="@item.Id" method="post" style="display:inline;">
-                        <button type="submit" class="btn btn-sm btn-danger"
-                                onclick=showPopUp()>
+                    <form asp-action="Delete" asp-controller="Customer" asp-route-id="@item.Id" method="post" style="display:inline;">
+                        <button type="button" class="btn btn-sm btn-danger"
+                                onclick="confirmDelete(this)">
                             <i class="fas fa-trash"></i>
                         </button>
                     </form>
+
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+
+@section Scripts {
+    <script src="~/js/general-popup.js" asp-append-version="true"></script>
+    <script>
+        function confirmDelete(btn) {
+          const form = btn.closest('form');
+          GeneralPopup.open(
+            'Do you really want to delete this?',
+            () => form.submit(),
+            () => console.log('Popup closed')
+          );
+        }
+    </script>
+}
