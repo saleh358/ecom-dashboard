@@ -46,15 +46,33 @@ namespace ECom_wep_app.Controllers
             return View();
         }
 
-        [HttpPut]
-        public IActionResult Update(Customer customer)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateCustomer(Customer customer)
         {
-            if (ModelState.IsValid)
-            {
-                _customerRepoitory.UpdateCustomer(customer);
-                return RedirectToAction("List");
-            }
-            return View("Update", customer);
+            if (!ModelState.IsValid)
+                return View("Update", customer);
+
+            var existing = _customerRepoitory.GetCustomerById(customer.Id);
+            if (existing == null)
+                return NotFound();
+
+            // map posted fields -> existing entity
+            existing.Name = customer.Name;
+            existing.Email = customer.Email;
+            existing.PhoneNumber = customer.PhoneNumber;
+            existing.Address = customer.Address;
+            existing.ImageUrl = customer.ImageUrl;
+
+            _customerRepoitory.UpdateCustomer(existing);
+            return RedirectToAction(nameof(List));
+        }
+
+        [HttpGet]
+        public IActionResult Update(int id)
+        {
+           var customer = _customerRepoitory.GetCustomerById(id);
+            return View(customer);
         }
 
         [HttpPost]
