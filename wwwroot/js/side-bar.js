@@ -1,11 +1,35 @@
-﻿/* Set the width of the side navigation to 250px and the left margin of the page content to 250px */
-function openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
-    document.getElementById("main").style.marginLeft = "250px";
-}
+﻿(function () {
+    const sidenav = document.getElementById('mySidenav');
+    const content = document.getElementById('content');
+    const btnOpen = document.getElementById('openSidebarBtn');
+    const btnClose = sidenav.querySelector('.closebtn');
 
-/* Set the width of the side navigation to 0 and the left margin of the page content to 0 */
-function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-    document.getElementById("main").style.marginLeft = "0";
-}
+    function openNav() {
+        sidenav.classList.add('open');
+        if (window.matchMedia('(min-width: 768px)').matches) {
+            content.classList.add('shifted');
+        }
+    }
+
+    function closeNav() {
+        sidenav.classList.remove('open');
+        content.classList.remove('shifted');
+    }
+
+    btnOpen.addEventListener('click', openNav);
+    btnClose.addEventListener('click', closeNav);
+
+    // Close on ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeNav();
+    });
+
+    // Close when clicking outside on mobile
+    document.addEventListener('click', (e) => {
+        if (!sidenav.classList.contains('open')) return;
+        const clickedInside = sidenav.contains(e.target) || btnOpen.contains(e.target);
+        if (!clickedInside && window.matchMedia('(max-width: 767.98px)').matches) {
+            closeNav();
+        }
+    });
+})();
