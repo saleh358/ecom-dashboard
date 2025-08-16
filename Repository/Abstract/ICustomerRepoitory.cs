@@ -1,4 +1,5 @@
 ﻿using ECom_wep_app.Models;
+using ECom_wep_app.Models.Utilities;
 
 namespace ECom_wep_app.Repository.Abstract;
 

@@ -1,6 +1,6 @@
-﻿namespace ECom_wep_app.Models
+﻿namespace ECom_wep_app.Models.Utilities
 {
-    public class PaginatedList<T>
+    public class PaginatedList<T> : IPaginated
     {
         public List<T> Items { get; }
         public int PageIndex { get; }           // 1-based

@@ -1,4 +1,5 @@
-﻿@model ECom_wep_app.Models.PaginatedList<Customer> 
+﻿@using ECom_wep_app.Models.Utilities
+@model PaginatedList<Customer> 
 @{
     var currentSearch = Context.Request.Query["searchTerm"].ToString();
     var currentPageSize = int.TryParse(Context.Request.Query["pageSize"], out var ps) ? ps : (Model?.PageSize ?? 10);

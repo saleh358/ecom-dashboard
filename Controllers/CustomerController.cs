@@ -12,7 +12,7 @@ namespace ECom_wep_app.Controllers
         {
             _customerRepoitory = customerRepoitory;
         }
-
+        //TODO : Lockup for customer list
         //public IActionResult List()
         //{
         //    List<Customer> customers = _customerRepoitory.GetAllCustomers();
