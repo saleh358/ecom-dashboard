@@ -13,11 +13,11 @@ namespace ECom_wep_app.Controllers
             _customerRepoitory = customerRepoitory;
         }
 
-        public IActionResult List()
-        {
-            List<Customer> customers = _customerRepoitory.GetAllCustomers();
-            return View("List", customers);
-        }
+        //public IActionResult List()
+        //{
+        //    List<Customer> customers = _customerRepoitory.GetAllCustomers();
+        //    return View("List", customers);
+        //}
 
         public IActionResult Details(int id)
         {
@@ -71,7 +71,7 @@ namespace ECom_wep_app.Controllers
         [HttpGet]
         public IActionResult Update(int id)
         {
-           var customer = _customerRepoitory.GetCustomerById(id);
+            var customer = _customerRepoitory.GetCustomerById(id);
             return View(customer);
         }
 
@@ -82,5 +82,13 @@ namespace ECom_wep_app.Controllers
             _customerRepoitory.DeleteCustomer(id);
             return RedirectToAction("List");
         }
+
+        [HttpGet]
+        public IActionResult List(string searchTerm, int pageIndex = 1, int pageSize = 10)
+        {
+            var customers = _customerRepoitory.GetCustomers(pageIndex, pageSize, searchTerm);
+            return View("List", customers);
+        }
+
     }
 }

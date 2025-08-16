@@ -1,4 +1,4 @@
-﻿@model List<Customer>
+﻿@model PaginatedList<Customer>
 
 <div class="d-flex justify-content-end mb-3">
     <a href="@Url.Action("Create", "Customer")" class="btn btn-primary">
@@ -21,7 +21,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Items)
         {
             <tr>
                 <td>@item.Id</td>
@@ -58,6 +58,8 @@
         }
     </tbody>
 </table>
+
+@await Html.PartialAsync("_Page",Model)
 
 
 @await Html.PartialAsync("_GeneralPopup")

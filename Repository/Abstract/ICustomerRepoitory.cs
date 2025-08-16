@@ -10,4 +10,5 @@ public interface ICustomerRepoitory
     public Customer UpdateCustomer(Customer customer);
     public void DeleteCustomer(int id);
 
+    public PaginatedList<Customer> GetCustomers(int pageIndex, int pageSize, string searchTerm = null);
 }
