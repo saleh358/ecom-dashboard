@@ -1,6 +1,7 @@
 ﻿using ECom_wep_app.Models;
 using ECom_wep_app.Repository.Abstract;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace ECom_wep_app.Controllers
 {
@@ -13,15 +14,15 @@ namespace ECom_wep_app.Controllers
             _customerRepoitory = customerRepoitory;
         }
         [HttpGet]
-        public List<Customer> CustomerLockup()
+        public async Task<List<Customer>> CustomerLockup()
         {
-            List<Customer> customers = _customerRepoitory.GetAllCustomers();
+            List<Customer> customers = await _customerRepoitory.GetAllCustomersAsync();
             return customers;
         }
 
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            Customer customer = _customerRepoitory.GetCustomerById(id);
+            Customer customer = await _customerRepoitory.GetCustomerByIdAsync(id);
             if (customer == null)
             {
                 return NotFound();
@@ -30,11 +31,11 @@ namespace ECom_wep_app.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateCustomer(Customer customer)
+        public async Task<IActionResult> CreateCustomer(Customer customer)
         {
             if (ModelState.IsValid)
             {
-                _customerRepoitory.AddCustomer(customer);
+               await _customerRepoitory.AddCustomerAsync(customer);
                 return RedirectToAction("List");
             }
             return View("Create", customer);
@@ -48,12 +49,12 @@ namespace ECom_wep_app.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult UpdateCustomer(Customer customer)
+        public async Task<IActionResult> UpdateCustomer(Customer customer)
         {
             if (!ModelState.IsValid)
                 return View("Update", customer);
 
-            var existing = _customerRepoitory.GetCustomerById(customer.Id);
+            var existing = await _customerRepoitory.GetCustomerByIdAsync(customer.Id);
             if (existing == null)
                 return NotFound();
 
@@ -64,14 +65,14 @@ namespace ECom_wep_app.Controllers
             existing.Address = customer.Address;
             existing.ImageUrl = customer.ImageUrl;
 
-            _customerRepoitory.UpdateCustomer(existing);
+            await _customerRepoitory.UpdateCustomerAsync(existing);
             return RedirectToAction(nameof(List));
         }
 
         [HttpGet]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var customer = _customerRepoitory.GetCustomerById(id);
+            var customer =await _customerRepoitory.GetCustomerByIdAsync(id);
             return View(customer);
         }
 
@@ -84,9 +85,9 @@ namespace ECom_wep_app.Controllers
         }
 
         [HttpGet]
-        public IActionResult List(string searchTerm, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> List(string searchTerm, int pageIndex = 1, int pageSize = 10)
         {
-            var customers = _customerRepoitory.GetCustomers(pageIndex, pageSize, searchTerm);
+            var customers =await _customerRepoitory.GetCustomersAsync(pageIndex, pageSize, searchTerm);
             return View("List", customers);
         }
 

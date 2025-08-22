@@ -2,6 +2,7 @@
 using ECom_wep_app.Models.Utilities;
 using ECom_wep_app.Repository.Abstract;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace ECom_wep_app.Repository.Services;
 
@@ -13,20 +14,20 @@ public class CustomerRepository : ICustomerRepoitory
         _context = context;
     }
 
-    public Customer AddCustomer(Customer customer)
+    public async Task<Customer> AddCustomerAsync(Customer customer)
     {
         if (customer == null)
         {
             throw new ArgumentNullException(nameof(customer), "Customer cannot be null");
         }
-        _context.Customer.Add(customer);
-        _context.SaveChanges();
+        await _context.Customer.AddAsync(customer);
+        await _context.SaveChangesAsync();
         return customer;
     }
 
-    public void DeleteCustomer(int id)
+    public async Task DeleteCustomer(int id)
     {
-        var customer = GetCustomerById(id);
+        var customer =await GetCustomerByIdAsync(id);
         if (customer == null)
         {
             throw new KeyNotFoundException($"Customer with ID {id} not found.");
@@ -36,33 +37,33 @@ public class CustomerRepository : ICustomerRepoitory
           return;
     }
 
-    public List<Customer> GetAllCustomers()
+    public async Task<List<Customer>> GetAllCustomersAsync()
     {
-        return _context.Customer.ToList() ;
+        return await _context.Customer.ToListAsync();
     }
-    public Customer GetCustomerById(int id)
+    public async Task<Customer> GetCustomerByIdAsync(int id)
     {
         return _context.Customer.FirstOrDefault(c => c.Id == id);
     }
 
-    public Customer UpdateCustomer(Customer customer)
+    public async Task<Customer> UpdateCustomerAsync(Customer customer)
     {
         if (customer == null)
         {
             throw new ArgumentNullException(nameof(customer), "Customer cannot be null");
         }
-        _context.Customer.Update(customer);
-        _context.SaveChanges();
+       _context.Customer.Update(customer);
+       await _context.SaveChangesAsync();
         return customer;
 
     }
-    public PaginatedList<Customer> GetCustomers(int pageIndex, int pageSize, string searchTerm = null)
+    public async Task<PaginatedList<Customer>> GetCustomersAsync(int pageIndex, int pageSize, string searchTerm = null)
     {
         pageIndex = pageIndex < 1 ? 1 : pageIndex;
         pageSize = pageSize <= 0 ? 10 : pageSize;
         searchTerm = string.IsNullOrWhiteSpace(searchTerm) ? null : searchTerm.Trim();
 
-        var query = _context.Customer.AsNoTracking().AsQueryable();
+        var query =  _context.Customer.AsNoTracking().AsQueryable();
 
         if (searchTerm != null)
         {
@@ -75,14 +76,15 @@ public class CustomerRepository : ICustomerRepoitory
 
         query = query.OrderBy(c => c.Id);
 
-        var totalCount = query.Count();
+        var totalCount =await query.CountAsync();
 
-        var items = query
+        var items =await query
             .Skip((pageIndex - 1) * pageSize)
             .Take(pageSize)
-            .ToList();
+            .ToListAsync();
 
         return new PaginatedList<Customer>(items, pageIndex, pageSize, totalCount);
     }
 
+  
 }
