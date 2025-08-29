@@ -1,8 +1,10 @@
 ﻿using ECom_wep_app.Models;
+using ECom_wep_app.Models.Search;
 using ECom_wep_app.Models.Utilities;
 using ECom_wep_app.Repository.Abstract;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ECom_wep_app.Repository.Services;
 
@@ -57,34 +59,68 @@ public class CustomerRepository : ICustomerRepoitory
         return customer;
 
     }
-    public async Task<PaginatedList<Customer>> GetCustomersAsync(int pageIndex, int pageSize, string searchTerm = null)
+    public async Task<IQueryable<Customer>> CustomerSearchAsync(CustomerSearchModel model)
     {
-        pageIndex = pageIndex < 1 ? 1 : pageIndex;
-        pageSize = pageSize <= 0 ? 10 : pageSize;
-        searchTerm = string.IsNullOrWhiteSpace(searchTerm) ? null : searchTerm.Trim();
+        var result = _context.Customer.AsQueryable();
 
-        var query =  _context.Customer.AsNoTracking().AsQueryable();
-
-        if (searchTerm != null)
+        if (model != null)
         {
-            var pattern = $"%{searchTerm}%";
-            query = query.Where(c =>
-                EF.Functions.Like(c.Name, pattern) ||
-                EF.Functions.Like(c.Email, pattern)
-            );
+            if (model.Id != null)
+                result = result.Where(c => c.Id == model.Id);
+
+            if (!string.IsNullOrWhiteSpace(model.Name))
+            {
+                var p = $"%{model.Name.Trim()}%";
+                result = result.Where(c => EF.Functions.Like(c.Name, p));
+            }
+            if (!string.IsNullOrWhiteSpace(model.Email))
+            {
+                var p = $"%{model.Email.Trim()}%";
+                result = result.Where(c => EF.Functions.Like(c.Email, p));
+            }
+            if (!string.IsNullOrWhiteSpace(model.PhoneNumber))
+            {
+                var p = $"%{model.PhoneNumber.Trim()}%";
+                result = result.Where(c => EF.Functions.Like(c.PhoneNumber, p));
+            }
+            if (!string.IsNullOrWhiteSpace(model.Address))
+            {
+                var p = $"%{model.Address.Trim()}%";
+                result = result.Where(c => EF.Functions.Like(c.Address, p));
+            }
+            if (!string.IsNullOrWhiteSpace(model.OrderBy))
+            {
+                switch (model.OrderBy.Trim().ToLower())
+                {
+                    case "id":
+                        result = result.OrderBy(c => c.Id);
+                        break;
+                    case "name":
+                        result = result.OrderBy(c => c.Name);
+                        break;
+                    case "email":
+                        result = result.OrderBy(c => c.Email);
+                        break;
+                    case "phonenumber":
+                        result = result.OrderBy(c => c.PhoneNumber);
+                        break;
+                    case "address":
+                        result = result.OrderBy(c => c.Address);
+                        break;
+                    default:
+                        result = result.OrderBy(c => c.Id);
+                        break;
+                }
+            }
+            else
+            {
+                result = result.OrderBy(c => c.Id);
+            }
         }
 
-        query = query.OrderBy(c => c.Id);
 
-        var totalCount =await query.CountAsync();
-
-        var items =await query
-            .Skip((pageIndex - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-
-        return new PaginatedList<Customer>(items, pageIndex, pageSize, totalCount);
+        return await Task.FromResult(result);
     }
 
-  
+
 }
