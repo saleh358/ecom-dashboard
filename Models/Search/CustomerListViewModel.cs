@@ -6,6 +6,6 @@ namespace ECom_wep_app.Models.Search
     internal class CustomerListViewModel
     {
         public CustomerSearchModel Search { get; set; }
-        public PaginatedList<Customer> Items { get; set; }
+        public PaginatedList<Customer> Customers { get; set; }
     }
 }

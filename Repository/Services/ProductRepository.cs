@@ -1,4 +1,5 @@
 ﻿using ECom_wep_app.Models;
+using ECom_wep_app.Models.Search;
 using ECom_wep_app.Models.Utilities;
 using ECom_wep_app.Repository.Abstract;
 using Microsoft.EntityFrameworkCore;
@@ -85,5 +86,25 @@ public class ProductRepository : IProductRepository
         return new PaginatedList<Product>(items, pageIndex, pageSize, totalCount);
     }
 
+    public async Task<IQueryable<Product>> ProductSearchAsync(ProductSearchModel model)
+    {
+        var result = _context.Products.AsQueryable();
+        if(model != null)
+        {
+            if (model.Id != null)
+                result = result.Where(p=> p.Id == model.Id);
+            if (!string.IsNullOrEmpty(model.Name))
+            {
+                var inp = $"%{model.Name.Trim()}%";
+                result = result.Where(p=> EF.Functions.Like(p.Name,inp));
+            }
+            if (!string.IsNullOrEmpty(model.Type))
+            {
+                var inp = $"%{model.Type.Trim()}%";
+                result = result.Where(p => EF.Functions.Like(p.Type, inp));
+            }
+        }
+        return await Task.FromResult(result);
 
+    }
 }

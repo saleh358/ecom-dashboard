@@ -61,7 +61,7 @@ public class CustomerRepository : ICustomerRepoitory
     }
     public async Task<IQueryable<Customer>> CustomerSearchAsync(CustomerSearchModel model)
     {
-        var result = _context.Customer.AsQueryable();
+        var result = _context.Customers.AsQueryable();
 
         if (model != null)
         {

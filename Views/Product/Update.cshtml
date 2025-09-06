@@ -12,8 +12,14 @@
 
         <div class="form-group mb-3">
             <label asp-for="Name" class="form-label"></label>
-            <input asp-for="Name" class="form-control" placeholder="Enter Product name" />
+            <input asp-for="Name" class="form-control" placeholder="Product name" />
             <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Type" class="form-label"></label>
+            <input asp-for="Type" class="form-control" placeholder="Type" />
+            <span asp-validation-for="Type" class="text-danger"></span>
         </div>
 
 

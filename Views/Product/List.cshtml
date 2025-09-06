@@ -1,8 +1,8 @@
-﻿@model CustomerListViewModel
+﻿@model ProductListViewModel
 @using ECom_wep_app.Models.Search
 
 @{
-    ViewBag.Title = "Customers";
+    ViewBag.Title = "Products";
 }
 
 <div class="mb-3">
@@ -16,13 +16,7 @@
             <input asp-for="Search.Name" class="form-control" placeholder="Name" />
         </div>
         <div class="col-12 col-sm-3">
-            <input asp-for="Search.Email" class="form-control" placeholder="Email" />
-        </div>
-        <div class="col-12 col-sm-2">
-            <input asp-for="Search.PhoneNumber" class="form-control" placeholder="Phone Number" />
-        </div>
-        <div class="col-12 col-sm-3">
-            <input asp-for="Search.Address" class="form-control" placeholder="Address" />
+            <input asp-for="Search.Type" class="form-control" placeholder="Type" />
         </div>
 
         <div class="col-12 d-flex gap-2 mt-2">
@@ -35,7 +29,7 @@
 </div>
 
 <div class="d-flex justify-content-end mb-3">
-    <a href="@Url.Action("Create", "Customer")" class="btn btn-primary">
+    <a href="@Url.Action("Create", "Product")" class="btn btn-primary">
         <i class="fas fa-plus"></i> Add New
     </a>
 </div>
@@ -45,9 +39,7 @@
         <tr>
             <th style="width:90px">Id</th>
             <th style="min-width:160px">Name</th>
-            <th style="min-width:220px">Email</th>
-            <th style="min-width:220px">Address</th>
-            <th style="min-width:140px">Phone Number</th>
+            <th style="min-width:220px">Type</th>
             <th style="width:110px">Image</th>
             <th style="width:50px"></th>
             <th style="width:50px"></th>
@@ -55,37 +47,35 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.Customers?.Items?.Count > 0)
+        @if (Model.Products?.Items?.Count > 0)
         {
-            foreach (var item in Model.Customers.Items)
+            foreach (var item in Model.Products.Items)
             {
                 <tr>
                     <td>@item.Id</td>
                     <td class="text-start">@item.Name</td>
-                    <td class="text-start">@item.Email</td>
-                    <td class="text-start">@item.Address</td>
-                    <td>@item.PhoneNumber</td>
+                    <td class="text-start">@item.Type</td>
                     <td>
                         <img src="~/Images/@item.ImageUrl"
-                             alt="Customer Image"
+                             alt="Product Image"
                              class="img-thumbnail"
                              style="max-width:80px;height:auto;" />
                     </td>
                     <td>
-                        <a href="@Url.Action("Details", "Customer", new { id = item.Id })"
+                        <a href="@Url.Action("Details", "Product", new { id = item.Id })"
                            class="btn btn-sm btn-info" title="Details">
                             <i class="fas fa-eye"></i>
                         </a>
                     </td>
                     <td>
-                        <a href="@Url.Action("Update", "Customer", new { id = item.Id })"
+                        <a href="@Url.Action("Update", "Product", new { id = item.Id })"
                            class="btn btn-sm btn-secondary" title="Edit">
                             <i class="fas fa-edit"></i>
                         </a>
                     </td>
                     <td>
                         <form asp-action="Delete"
-                              asp-controller="Customer"
+                              asp-controller="Product"
                               asp-route-id="@item.Id"
                               method="post"
                               style="display:inline;">
@@ -103,13 +93,13 @@
         else
         {
             <tr>
-                <td colspan="9" class="text-center text-muted">No customers found.</td>
+                <td colspan="9" class="text-center text-muted">No Products found.</td>
             </tr>
         }
     </tbody>
 </table>
 
-@await Html.PartialAsync("_Page", Model.Customers)
+@await Html.PartialAsync("_Page", Model.Products)
 
 @await Html.PartialAsync("_GeneralPopup")
 
@@ -119,7 +109,7 @@
         function confirmDelete(btn) {
             const form = btn.closest('form');
             GeneralPopup.open(
-                'Do you really want to delete this customer?',
+                'Do you really want to delete this product?',
                 () => form.submit(),
                 () => {}
             );
