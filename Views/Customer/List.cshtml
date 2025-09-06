@@ -1,67 +1,115 @@
-﻿@using ECom_wep_app.Models.Utilities
-@model PaginatedList<Customer>
+﻿@model CustomerListViewModel
+@using ECom_wep_app.Models.Search
+
+@{
+    ViewBag.Title = "Customers";
+}
+
+<div class="mb-3">
+    <div class="fw-bold mb-2">Search</div>
+
+    <form asp-action="List" method="get" class="row g-2 align-items-end">
+        <div class="col-12 col-sm-2">
+            <input asp-for="Search.Id" class="form-control" placeholder="Id" />
+        </div>
+        <div class="col-12 col-sm-2">
+            <input asp-for="Search.Name" class="form-control" placeholder="Name" />
+        </div>
+        <div class="col-12 col-sm-3">
+            <input asp-for="Search.Email" class="form-control" placeholder="Email" />
+        </div>
+        <div class="col-12 col-sm-2">
+            <input asp-for="Search.PhoneNumber" class="form-control" placeholder="Phone Number" />
+        </div>
+        <div class="col-12 col-sm-3">
+            <input asp-for="Search.Address" class="form-control" placeholder="Address" />
+        </div>
+
+        <div class="col-12 d-flex gap-2 mt-2">
+            <button class="btn btn-outline-secondary" type="submit">
+                <i class="fas fa-search"></i> Search
+            </button>
+            <a asp-action="List" class="btn btn-link text-decoration-none">Reset</a>
+        </div>
+    </form>
+</div>
 
 <div class="d-flex justify-content-end mb-3">
     <a href="@Url.Action("Create", "Customer")" class="btn btn-primary">
         <i class="fas fa-plus"></i> Add New
     </a>
 </div>
+
 <table class="table table-bordered table-hover table-striped align-middle text-center">
     <thead class="table-dark">
         <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Address</th>
-            <th>Phone Number</th>
-            <th>Image</th>
-            <th></th>
-            <th></th>
-            <th></th>
-
+            <th style="width:90px">Id</th>
+            <th style="min-width:160px">Name</th>
+            <th style="min-width:220px">Email</th>
+            <th style="min-width:220px">Address</th>
+            <th style="min-width:140px">Phone Number</th>
+            <th style="width:110px">Image</th>
+            <th style="width:50px"></th>
+            <th style="width:50px"></th>
+            <th style="width:50px"></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Items)
+        @if (Model.Items?.Items?.Count > 0)
+        {
+            foreach (var item in Model.Items.Items)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td class="text-start">@item.Name</td>
+                    <td class="text-start">@item.Email</td>
+                    <td class="text-start">@item.Address</td>
+                    <td>@item.PhoneNumber</td>
+                    <td>
+                        <img src="~/Images/@item.ImageUrl"
+                             alt="Customer Image"
+                             class="img-thumbnail"
+                             style="max-width:80px;height:auto;" />
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Details", "Customer", new { id = item.Id })"
+                           class="btn btn-sm btn-info" title="Details">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Update", "Customer", new { id = item.Id })"
+                           class="btn btn-sm btn-secondary" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <form asp-action="Delete"
+                              asp-controller="Customer"
+                              asp-route-id="@item.Id"
+                              method="post"
+                              style="display:inline;">
+                            <button type="button"
+                                    class="btn btn-sm btn-danger"
+                                    title="Delete"
+                                    onclick="confirmDelete(this)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+        else
         {
             <tr>
-                <td>@item.Id</td>
-                <td>@item.Name</td>
-                <td>@item.Email</td>
-                <td>@item.Address</td>
-                <td>@item.PhoneNumber</td>
-                <td>
-                    <img src="~/Images/@item.ImageUrl" alt="Customer Image"
-                         class="img-thumbnail" style="max-width:80px;height:auto;" />
-                </td>
-                <td>
-                    <a href="@Url.Action("Details", "Customer", new { id = item.Id })"
-                       class="btn btn-sm btn-info">
-                        <i class="fas fa-eye"></i>
-                    </a>
-                </td>
-                <td>
-                    <a href="@Url.Action("Update", "Customer", new { id = item.Id })"
-                       class="btn btn-sm btn-secondary">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                </td>
-                <td>
-                    <form asp-action="Delete" asp-controller="Customer" asp-route-id="@item.Id" method="post" style="display:inline;">
-                        <button type="button" class="btn btn-sm btn-danger"
-                                onclick="confirmDelete(this)">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </form>
-
-                </td>
+                <td colspan="9" class="text-center text-muted">No customers found.</td>
             </tr>
         }
     </tbody>
 </table>
 
-@await Html.PartialAsync("_Page",Model)
-
+@await Html.PartialAsync("_Page", Model.Items)
 
 @await Html.PartialAsync("_GeneralPopup")
 
@@ -69,12 +117,12 @@
     <script src="~/js/general-popup.js" asp-append-version="true"></script>
     <script>
         function confirmDelete(btn) {
-          const form = btn.closest('form');
-          GeneralPopup.open(
-            'Do you really want to delete this customer?',
-            () => form.submit(),
-            () => console.log('Popup closed')
-          );
+            const form = btn.closest('form');
+            GeneralPopup.open(
+                'Do you really want to delete this customer?',
+                () => form.submit(),
+                () => {}
+            );
         }
     </script>
 }

@@ -1,4 +1,5 @@
 ﻿using ECom_wep_app.Models;
+using ECom_wep_app.Models.Search;
 using ECom_wep_app.Models.Utilities;
 
 namespace ECom_wep_app.Repository.Abstract;
@@ -11,5 +12,5 @@ public interface ICustomerRepoitory
     public Task<Customer> UpdateCustomerAsync(Customer customer);
     public Task DeleteCustomer(int id);
 
-    public Task<PaginatedList<Customer>> GetCustomersAsync(int pageIndex, int pageSize, string searchTerm = null);
+    public Task<IQueryable<Customer>> CustomerSearchAsync(CustomerSearchModel model);
 }
