@@ -103,7 +103,7 @@ namespace ECom_wep_app.Controllers
                 page,
                 pageSize
             );
-            var vm = new CustomerListViewModel { Search = search, Items = paged };
+            var vm = new CustomerListViewModel { Search = search, Customers = paged };
             return View(vm);
         }
     }
