@@ -11,6 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<EComDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection")));
 builder.Services.AddScoped<ICustomerRepoitory, CustomerRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 

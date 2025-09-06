@@ -1,6 +1,13 @@
 ﻿@model Product
 
-<div class="card shadow-sm" style="max-width: 500px; margin: auto;">
+<div class="card shadow-sm position-relative" style="max-width: 500px; margin: auto;">
+    <!-- Back Button -->
+    <a href="@Url.Action("List", "Product")"
+       class="btn btn-sm btn-primary position-absolute"
+       style="top: 10px; left: 10px; border-radius: 50px; padding: 5px 15px;">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+
     <div class="card-body text-center">
         <img src="~/Images/@Model.ImageUrl"
              alt="Product Image"
@@ -9,5 +16,5 @@
 
         <h3 class="card-title">@Model.Name</h3>
 
-        <p class="text-muted mb-1"><strong>Type:</strong> @Model.Type</p>
-  
+    </div>
+</div>

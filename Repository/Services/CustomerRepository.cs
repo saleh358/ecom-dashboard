@@ -20,7 +20,7 @@ public class CustomerRepository : ICustomerRepoitory
         {
             throw new ArgumentNullException(nameof(customer), "Customer cannot be null");
         }
-        await _context.Customer.AddAsync(customer);
+        await _context.Customers.AddAsync(customer);
         await _context.SaveChangesAsync();
         return customer;
     }
@@ -32,18 +32,18 @@ public class CustomerRepository : ICustomerRepoitory
         {
             throw new KeyNotFoundException($"Customer with ID {id} not found.");
         }
-         _context.Customer.Remove(customer);
+         _context.Customers.Remove(customer);
          _context.SaveChanges();
           return;
     }
 
     public async Task<List<Customer>> GetAllCustomersAsync()
     {
-        return await _context.Customer.ToListAsync();
+        return await _context.Customers.ToListAsync();
     }
     public async Task<Customer> GetCustomerByIdAsync(int id)
     {
-        return _context.Customer.FirstOrDefault(c => c.Id == id);
+        return _context.Customers.FirstOrDefault(c => c.Id == id);
     }
 
     public async Task<Customer> UpdateCustomerAsync(Customer customer)
@@ -52,7 +52,7 @@ public class CustomerRepository : ICustomerRepoitory
         {
             throw new ArgumentNullException(nameof(customer), "Customer cannot be null");
         }
-       _context.Customer.Update(customer);
+       _context.Customers.Update(customer);
        await _context.SaveChangesAsync();
         return customer;
 
@@ -63,7 +63,7 @@ public class CustomerRepository : ICustomerRepoitory
         pageSize = pageSize <= 0 ? 10 : pageSize;
         searchTerm = string.IsNullOrWhiteSpace(searchTerm) ? null : searchTerm.Trim();
 
-        var query =  _context.Customer.AsNoTracking().AsQueryable();
+        var query =  _context.Customers.AsNoTracking().AsQueryable();
 
         if (searchTerm != null)
         {
