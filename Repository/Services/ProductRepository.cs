@@ -1,15 +1,16 @@
-﻿using ECom_wep_app.Models;
+﻿using System.Threading.Tasks;
+using ECom_wep_app.Models;
 using ECom_wep_app.Models.Search;
 using ECom_wep_app.Models.Utilities;
 using ECom_wep_app.Repository.Abstract;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace ECom_wep_app.Repository.Services;
 
 public class ProductRepository : IProductRepository
 {
     private readonly EComDBContext _context;
+
     public ProductRepository(EComDBContext context)
     {
         _context = context;
@@ -42,6 +43,7 @@ public class ProductRepository : IProductRepository
     {
         return await _context.Products.ToListAsync();
     }
+
     public async Task<Product> GetProductByIdAsync(int id)
     {
         return _context.Products.FirstOrDefault(c => c.Id == id);
@@ -56,9 +58,13 @@ public class ProductRepository : IProductRepository
         _context.Products.Update(product);
         await _context.SaveChangesAsync();
         return product;
-
     }
-    public async Task<PaginatedList<Product>> GetProductsAsync(int pageIndex, int pageSize, string searchTerm = null)
+
+    public async Task<PaginatedList<Product>> GetProductsAsync(
+        int pageIndex,
+        int pageSize,
+        string searchTerm = null
+    )
     {
         pageIndex = pageIndex < 1 ? 1 : pageIndex;
         pageSize = pageSize <= 0 ? 10 : pageSize;
@@ -69,19 +75,14 @@ public class ProductRepository : IProductRepository
         if (searchTerm != null)
         {
             var pattern = $"%{searchTerm}%";
-            query = query.Where(c =>
-                EF.Functions.Like(c.Name, pattern) 
-            );
+            query = query.Where(c => EF.Functions.Like(c.Name, pattern));
         }
 
         query = query.OrderBy(c => c.Id);
 
         var totalCount = await query.CountAsync();
 
-        var items = await query
-            .Skip((pageIndex - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
+        var items = await query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
 
         return new PaginatedList<Product>(items, pageIndex, pageSize, totalCount);
     }
@@ -89,14 +90,14 @@ public class ProductRepository : IProductRepository
     public async Task<IQueryable<Product>> ProductSearchAsync(ProductSearchModel model)
     {
         var result = _context.Products.AsQueryable();
-        if(model != null)
+        if (model != null)
         {
             if (model.Id != null)
-                result = result.Where(p=> p.Id == model.Id);
+                result = result.Where(p => p.Id == model.Id);
             if (!string.IsNullOrEmpty(model.Name))
             {
                 var inp = $"%{model.Name.Trim()}%";
-                result = result.Where(p=> EF.Functions.Like(p.Name,inp));
+                result = result.Where(p => EF.Functions.Like(p.Name, inp));
             }
             if (!string.IsNullOrEmpty(model.Type))
             {
@@ -105,6 +106,5 @@ public class ProductRepository : IProductRepository
             }
         }
         return await Task.FromResult(result);
-
     }
 }
