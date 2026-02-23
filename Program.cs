@@ -2,6 +2,8 @@ using ASPNETCoreIdentityDemo.Data;
 using ECom_wep_app.Models;
 using ECom_wep_app.Repository.Abstract;
 using ECom_wep_app.Repository.Services;
+using ECom_wep_app.Service.Abstract;
+using ECom_wep_app.Service.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,8 +19,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection"))
 );
 builder.Services.AddScoped<ICustomerRepoitory, CustomerRepository>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder
     .Services.AddIdentity<IdentityUser, IdentityRole>()
